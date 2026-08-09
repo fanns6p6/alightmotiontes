@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlightMotion Verifier</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text: #1F2937;
+            --border: #D1D5DB;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        .card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+        button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .response-box {
+            margin-top: 20px;
+            background-color: #111827;
+            color: #10B981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+        }
+        .error-text { color: #EF4444; }
+        .success-text { color: #10B981; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <!-- STEP 1: Masukkan Email -->
+            <div id="step1" class="step active">
+                <h2>Langkah 1: Request Access</h2>
+                <div class="form-group">
+                    <label for="emailInput">Masukkan Alamat Email</label>
+                    <input type="email" id="emailInput" placeholder="contoh@domain.com" required>
+                </div>
+                <button id="btnSend">Kirim Permintaan</button>
+            </div>
+
+            <!-- STEP 2: Masukkan Link Verifikasi -->
+            <div id="step2" class="step">
+                <h2>Langkah 2: Verifikasi Link</h2>
+                <div class="form-group">
+                    <label for="linkInput">Masukkan Link Verifikasi</label>
+                    <input type="url" id="linkInput" placeholder="https://..." required>
+                </div>
+                <button id="btnVerify">Verifikasi Sekarang</button>
+            </div>
+
+            <!-- Kotak Log Respons -->
+            <div id="logBox" class="response-box"></div>
+        </div>
+    </div>
+
+    <script>
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const btnSend = document.getElementById('btnSend');
+        const btnVerify = document.getElementById('btnVerify');
+        const logBox = document.getElementById('logBox');
+
+        function showLog(message, isError = false) {
+            logBox.style.display = 'block';
+            logBox.className = 'response-box ' + (isError ? 'error-text' : 'success-text');
+            logBox.textContent = message;
+        }
+
+        // --- STEP 1: SEND EMAIL ---
+        btnSend.addEventListener('click', async () => {
+            const email = document.getElementById('emailInput').value;
+            if (!email) return alert('Email tidak boleh kosong!');
+
+            btnSend.disabled = true;
+            btnSend.textContent = 'Memproses...';
+            logBox.style.display = 'none';
+
+            try {
+                // Catatan: Pastikan nama parameter '?email=' sesuai dengan API asli Anda
+                const url = `/api/send?email=${encodeURIComponent(email)}`;
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json, text/plain, */*' },
+                    cache: 'no-store'
+                });
+
+                const data = await response.text();
+
+                if (response.ok) {
+                    showLog(`Berhasil! Server merespons:\n${data}`);
+                    setTimeout(() => {
+                        step1.classList.remove('active');
+                        step2.classList.add('active');
+                        logBox.style.display = 'none';
+                    }, 1500);
+                } else {
+                    showLog(`Gagal (Status: ${response.status}):\n${data}`, true);
+                }
+            } catch (error) {
+                if (window.location.protocol === 'file:') {
+                    showLog("Error: Harus dijalankan dari Vercel, bukan dari file lokal (file://).", true);
+                } else {
+                    showLog("Error Koneksi: " + error.message, true);
+                }
+            } finally {
+                btnSend.disabled = false;
+                btnSend.textContent = 'Kirim Permintaan';
+            }
+        });
+
+        // --- STEP 2: VERIFY LINK ---
+        btnVerify.addEventListener('click', async () => {
+            const link = document.getElementById('linkInput').value;
+            if (!link) return alert('Link verifikasi tidak boleh kosong!');
+
+            btnVerify.disabled = true;
+            btnVerify.textContent = 'Memverifikasi...';
+            logBox.style.display = 'none';
+
+            try {
+                // Catatan: Pastikan nama parameter '?url=' sesuai dengan API asli Anda
+                const url = `/api/verify?url=${encodeURIComponent(link)}`;
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json, text/plain, */*' },
+                    cache: 'no-store'
+                });
+
+                const data = await response.text();
+
+                if (response.ok) {
+                    showLog(`✅ VERIFIKASI BERHASIL!\n\nResponse:\n${data}`);
+                } else {
+                    showLog(`❌ VERIFIKASI GAGAL (Status: ${response.status})\n\nResponse:\n${data}`, true);
+                }
+            } catch (error) {
+                showLog("Error Koneksi: " + error.message, true);
+            } finally {
+                btnVerify.disabled = false;
+                btnVerify.textContent = 'Verifikasi Sekarang';
+            }
+        });
+    </script>
+</body>
+</html>
