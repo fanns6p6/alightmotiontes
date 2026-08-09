@@ -122,6 +122,10 @@
             margin-top: 0.4rem; 
             background: var(--accent); 
             color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         button:hover:not(:disabled) { 
             background: var(--accent-hover); 
@@ -131,8 +135,8 @@
             transform: translateY(0);
         }
         button:disabled { 
-            background: #151515; 
-            color: #444444; 
+            background: #151515 !important; 
+            color: #888888 !important; 
             cursor: not-allowed; 
             border: 1px solid #1a1a1a; 
         }
@@ -173,9 +177,9 @@
         .alert.loading { background: transparent; color: var(--text-main); border-color: var(--border-color); display: block; }
 
         .loader {
-            display: inline-block; width: 12px; height: 12px; border: 2px solid #fff;
+            display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor;
             border-bottom-color: transparent; border-radius: 50%;
-            animation: rotation 0.8s linear infinite; margin-right: 8px; vertical-align: middle;
+            animation: rotation 0.8s linear infinite;
         }
 
         /* ================= UI RESULT STATUS ================= */
@@ -326,7 +330,7 @@
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                     </div>
-                    <div class="result-title">Akun Berhasil Premium!</div>
+                    <div class="result-title">Akun Sukses Menjadi Premium!</div>
                     <div class="result-desc">Mantap ngab! Akun lu udah sukses di-upgrade ke Premium. Tinggal login dan nikmatin fiturnya.</div>
                     <button onclick="location.reload()">Kembali ke Awal</button>
                 </div>
@@ -399,6 +403,7 @@
             }
 
             btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span> Memproses...';
             showMessage('msgStep1', 'loading', 'Memproses permintaan...');
 
             try {
@@ -424,6 +429,7 @@
                 showMessage('msgStep1', 'error', 'Koneksi jaringan bermasalah.');
             } finally {
                 btn.disabled = false;
+                btn.innerHTML = 'Lanjutkan';
             }
         }
 
@@ -455,7 +461,7 @@
             let timeLeft = WAIT_TIME_SECONDS;
             
             const timer = setInterval(() => {
-                btn.innerText = `Mohon tunggu (${timeLeft}s)...`;
+                btn.innerHTML = `Mohon tunggu (${timeLeft}s)...`;
                 timeLeft--;
 
                 if (timeLeft < 0) {
@@ -467,11 +473,11 @@
                     status.innerText = `Iklan ditonton: ${currentAdCount}/${TOTAL_ADS_REQUIRED}`;
                     
                     if (currentAdCount < TOTAL_ADS_REQUIRED) {
-                        btn.innerText = `Lanjut Nonton Iklan (${currentAdCount}/${TOTAL_ADS_REQUIRED})`;
+                        btn.innerHTML = `Lanjut Nonton Iklan (${currentAdCount}/${TOTAL_ADS_REQUIRED})`;
                     } else {
-                        btn.innerText = "Verifikasi Sekarang";
-                        btn.style.background = "var(--success)";
-                        btn.style.color = "#ffffff";
+                        btn.innerHTML = "Verifikasi Sekarang";
+                        btn.style.background = "var(--accent)"; // Berubah jadi putih
+                        btn.style.color = "#000000";
                         status.innerText = "Semua syarat iklan terpenuhi. Silakan verifikasi.";
                     }
                 }
@@ -483,6 +489,8 @@
             const btn = document.getElementById('btnAction');
 
             btn.disabled = true;
+            // Menambahkan animasi loading ke dalam tombol saat diproses
+            btn.innerHTML = '<span class="loader"></span> Memproses...';
             showMessage('msgStep2', 'loading', 'Memverifikasi data ke server...');
 
             try {
@@ -492,38 +500,35 @@
                 try {
                     const data = JSON.parse(textData);
                     
-                    // Kalau berhasil (API kasih sinyal OK)
                     if (response.ok && data.status !== false) {
                         document.getElementById('step2').classList.remove('active');
                         document.getElementById('stepSuccess').classList.add('active');
                     } 
-                    // Kalau gagal (API nolak)
                     else {
                         document.getElementById('step2').classList.remove('active');
                         document.getElementById('stepError').classList.add('active');
                         document.getElementById('errorDesc').innerText = data.message || data.error || 'Waduh, gagal ngab. Coba cek lagi link lu, pastikan belum expired.';
                     }
                 } catch (e) {
-                    // Kalau JSON dari API hancur/salah format
                     document.getElementById('step2').classList.remove('active');
                     document.getElementById('stepError').classList.add('active');
                     document.getElementById('errorDesc').innerText = 'Kesalahan pada sistem parsing data server.';
                 }
             } catch (error) {
-                // Kalau internet down / server error
                 document.getElementById('step2').classList.remove('active');
                 document.getElementById('stepError').classList.add('active');
                 document.getElementById('errorDesc').innerText = 'Gagal terhubung ke server. Pastikan koneksi aman.';
             } finally {
                 btn.disabled = false;
                 if (currentAdCount >= TOTAL_ADS_REQUIRED) {
-                    btn.innerText = "Verifikasi Sekarang";
+                    btn.innerHTML = "Verifikasi Sekarang";
+                    btn.style.background = "var(--accent)";
+                    btn.style.color = "#000000";
                 }
             }
         }
 
         function retryStep2() {
-            // Balikin lagi ke input link kalau mau coba lagi
             document.getElementById('stepError').classList.remove('active');
             document.getElementById('step2').classList.add('active');
             document.getElementById('msgStep2').style.display = 'none';
