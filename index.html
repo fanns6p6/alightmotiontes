@@ -121,7 +121,7 @@
             <p class="subtitle">Masukkan link verifikasi yang Anda dapatkan.</p>
             
             <div class="input-group">
-                <input type="url" id="linkInput" placeholder="https://..." required>
+                <input type="url" id="linkInput" placeholder="https://alight-creative.firebaseapp.com/..." required>
             </div>
             <button id="btnVerif" onclick="verifyLink()">Verifikasi Sekarang</button>
             <div id="msgStep2" class="alert"></div>
@@ -151,36 +151,44 @@
             showMessage('msgStep1', 'loading', 'Memproses, mohon tunggu...');
 
             try {
-                // Mengirim email sebagai parameter (Contoh: /api/send?email=contoh@gmail.com)
-                // Sesuaikan 'email=' jika API aslinya menggunakan nama parameter lain
                 const response = await fetch(`/api/send?email=${encodeURIComponent(email)}`);
-                const data = await response.json().catch(() => ({})); 
-
-                // Cek apakah response dari server sukses (HTTP 200 OK)
-                if (response.ok) {
-                    showMessage('msgStep1', 'success', 'Berhasil! Melanjutkan ke langkah verifikasi...');
+                const textData = await response.text();
+                
+                try {
+                    const data = JSON.parse(textData);
                     
-                    // Lanjut ke Step 2 setelah delay 1.5 detik agar tulisan 'Berhasil' terbaca
-                    setTimeout(() => {
-                        document.getElementById('step1').classList.remove('active');
-                        document.getElementById('step2').classList.add('active');
-                    }, 1500);
-                } else {
-                    // Jika gagal dari server
-                    const errorMsg = data.message || data.error || 'Terjadi kesalahan pada sistem.';
-                    showMessage('msgStep1', 'error', `Gagal: ${errorMsg}`);
+                    // Cek jika status API mengembalikan error
+                    if (response.ok && data.status !== false) {
+                        showMessage('msgStep1', 'success', 'Berhasil! Melanjutkan ke langkah verifikasi...');
+                        setTimeout(() => {
+                            document.getElementById('step1').classList.remove('active');
+                            document.getElementById('step2').classList.add('active');
+                        }, 1500);
+                    } else {
+                        const errorMsg = data.message || 'Terjadi kesalahan pada sistem.';
+                        showMessage('msgStep1', 'error', `Gagal: ${errorMsg}`);
+                    }
+                } catch (e) {
+                    showMessage('msgStep1', 'error', `Respon Server Bukan JSON: ${textData.substring(0, 100)}...`);
                 }
             } catch (error) {
-                showMessage('msgStep1', 'error', 'Gagal menghubungi server. Periksa koneksi Anda.');
+                showMessage('msgStep1', 'error', 'Gagal menghubungi server. Pastikan web sudah di-deploy ke Vercel.');
             } finally {
                 btn.disabled = false;
             }
         }
 
-        // Fungsi Langkah 2: Verifikasi Link
+        // Fungsi Langkah 2: Verifikasi Link (Otomatis menyisipkan Email)
         async function verifyLink() {
+            // Ambil data dari input email (Langkah 1) dan input link (Langkah 2)
+            const email = document.getElementById('emailInput').value.trim(); 
             const link = document.getElementById('linkInput').value.trim();
             const btn = document.getElementById('btnVerif');
+
+            if (!email) {
+                showMessage('msgStep2', 'error', 'Email tidak ditemukan! Silakan refresh halaman dan ulangi dari awal.');
+                return;
+            }
 
             if (!link) {
                 showMessage('msgStep2', 'error', 'Harap masukkan link verifikasi!');
@@ -191,23 +199,26 @@
             showMessage('msgStep2', 'loading', 'Memverifikasi link, mohon tunggu...');
 
             try {
-                // Mengirim link sebagai parameter (Contoh: /api/verif?link=https://...)
-                // Sesuaikan 'link=' jika API aslinya menggunakan nama parameter yang berbeda
-                const response = await fetch(`/api/verif?link=${encodeURIComponent(link)}`);
-                const data = await response.json().catch(() => ({}));
-
-                if (response.ok) {
-                    // Jika API verifikasi merespon sukses
-                    const successMsg = data.message || 'Verifikasi Berhasil! Akses telah diberikan.';
-                    showMessage('msgStep2', 'success', successMsg);
+                // MENGIRIM KEDUA PARAMETER (email dan link) SEKALIGUS
+                const response = await fetch(`/api/verif?email=${encodeURIComponent(email)}&link=${encodeURIComponent(link)}`);
+                const textData = await response.text();
+                
+                try {
+                    const data = JSON.parse(textData);
                     
-                    // Opsional: Sembunyikan input dan tombol setelah sukses
-                    document.getElementById('linkInput').style.display = 'none';
-                    btn.style.display = 'none';
-                } else {
-                    // Jika verifikasi gagal (Link salah, kedaluwarsa, dll)
-                    const errorMsg = data.message || data.error || 'Link tidak valid atau sudah kedaluwarsa.';
-                    showMessage('msgStep2', 'error', `Gagal: ${errorMsg}`);
+                    if (response.ok && data.status !== false) {
+                        const successMsg = data.message || 'Verifikasi Berhasil! Akses telah diberikan.';
+                        showMessage('msgStep2', 'success', successMsg);
+                        
+                        // Sembunyikan form input setelah sukses
+                        document.getElementById('linkInput').style.display = 'none';
+                        btn.style.display = 'none';
+                    } else {
+                        const errorMsg = data.message || data.error || 'Link tidak valid atau sudah kedaluwarsa.';
+                        showMessage('msgStep2', 'error', `Gagal: ${errorMsg}`);
+                    }
+                } catch (e) {
+                    showMessage('msgStep2', 'error', `Respon API Error: ${textData.substring(0, 100)}...`);
                 }
             } catch (error) {
                 showMessage('msgStep2', 'error', 'Gagal menghubungi server. Periksa koneksi Anda.');
