@@ -2,142 +2,321 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Verifikasi AM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VELTRIX | Secure Access</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f4f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 1.5rem;
-            color: #1f2937;
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-        }
-        p.subtitle {
-            color: #6b7280;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-        .input-group {
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input:focus {
-            border-color: #3b82f6;
-        }
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: white;
-            background: #3b82f6;
-        }
-        button:hover {
-            background: #2563eb;
-        }
-        button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-        
-        /* Animasi Transisi antar Step */
-        .step {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-        .step.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        :root {
+            --bg-base: #000000;
+            --bg-card: #0a0a0a;
+            --bg-card-hover: #121212;
+            --border-color: #222222;
+            --border-focus: #555555;
+            --text-main: #f5f5f7;
+            --text-muted: #888888;
+            --accent: #ffffff;
+            --accent-hover: #e0e0e0;
+            --error: #ff5c5c;
+            --success: #22c55e;
+            --wa-color: #25D366;
         }
 
-        /* Notifikasi (Alert) */
-        .alert {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            display: none;
-            text-align: left;
-            word-break: break-word;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+            background-image: radial-gradient(circle at 50% 0%, #151515 0%, transparent 70%);
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
         }
-        .alert.error { background: #fee2e2; color: #b91c1c; display: block; }
-        .alert.success { background: #d1fae5; color: #047857; display: block; }
-        .alert.loading { background: #e5e7eb; color: #4b5563; display: block; }
+
+        #main-content {
+            display: block;
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .container {
+            background: var(--bg-card);
+            padding: 2.2rem 2rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .brand-wrapper {
+            margin-bottom: 1.8rem;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+        }
+
+        .subtitle { 
+            color: var(--text-muted); 
+            font-size: 0.8rem; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input-group { 
+            margin-bottom: 1.2rem; 
+            text-align: left; 
+        }
+        
+        label {
+            display: block; 
+            font-size: 0.7rem; 
+            text-transform: uppercase;
+            letter-spacing: 1.5px; 
+            color: var(--text-muted); 
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%; 
+            padding: 0.95rem 1rem; 
+            background: #050505;
+            border: 1px solid var(--border-color); 
+            border-radius: 14px;
+            color: var(--text-main); 
+            font-size: 0.95rem; 
+            outline: none;
+            transition: all 0.25s ease;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        input:focus { 
+            border-color: var(--border-focus); 
+            background: #000000;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.03); 
+        }
+
+        button {
+            width: 100%; 
+            padding: 0.95rem; 
+            border: none; 
+            border-radius: 14px;
+            font-weight: 600; 
+            font-size: 0.95rem; 
+            cursor: pointer; 
+            transition: all 0.25s ease;
+            margin-top: 0.4rem; 
+            background: var(--accent); 
+            color: #000000;
+        }
+        button:hover:not(:disabled) { 
+            background: var(--accent-hover); 
+            transform: translateY(-1px); 
+        }
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        button:disabled { 
+            background: #151515; 
+            color: #444444; 
+            cursor: not-allowed; 
+            border: 1px solid #1a1a1a; 
+        }
+
+        .ad-status { 
+            font-size: 0.75rem; 
+            color: var(--text-muted); 
+            margin-top: 1rem; 
+            display: none; 
+            letter-spacing: 0.5px;
+        }
+        
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .alert {
+            margin-top: 1rem; 
+            padding: 0.85rem; 
+            border-radius: 12px;
+            font-size: 0.8rem; 
+            display: none; 
+            text-align: center; 
+            border: 1px solid;
+            line-height: 1.4;
+        }
+        .alert.error { background: rgba(255, 92, 92, 0.05); color: var(--error); border-color: rgba(255,92,92,0.15); display: block; }
+        .alert.success { background: rgba(34, 197, 94, 0.05); color: var(--success); border-color: rgba(34,197,94,0.15); display: block; }
+        .alert.loading { background: transparent; color: var(--text-main); border-color: var(--border-color); display: block; }
+
+        .loader {
+            display: inline-block; width: 12px; height: 12px; border: 2px solid #fff;
+            border-bottom-color: transparent; border-radius: 50%;
+            animation: rotation 0.8s linear infinite; margin-right: 8px; vertical-align: middle;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARD INFORMASI & CHANNEL WA OPSIONAL */
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 420px;
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        
+        .info-card h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .channel-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #050505;
+            border: 1px solid var(--border-color);
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
+            margin-bottom: 1.2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+        }
+        .channel-banner:hover {
+            border-color: var(--border-focus);
+            background: #0a0a0a;
+        }
+        .channel-info span {
+            display: block;
+        }
+        .channel-info .title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .channel-info .desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .channel-badge {
+            font-size: 0.7rem;
+            background: rgba(37, 211, 102, 0.1);
+            color: var(--wa-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(37, 211, 102, 0.2);
+        }
+
+        .tutorial-steps {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .tutorial-steps p strong {
+            color: var(--text-main);
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <!-- LANGKAH 1: Masukkan Email -->
-        <div id="step1" class="step active">
-            <h1>Langkah 1</h1>
-            <p class="subtitle">Masukkan email untuk menerima akses.</p>
-            
-            <div class="input-group">
-                <input type="email" id="emailInput" placeholder="contoh@gmail.com" required>
+    <!-- KONTEN UTAMA -->
+    <div id="main-content">
+        <div class="container">
+            <div class="brand-wrapper">
+                <div class="brand">Veltrix</div>
+                <div class="subtitle">Secure Verification System</div>
             </div>
-            <button id="btnSend" onclick="sendEmail()">Lanjutkan</button>
-            <div id="msgStep1" class="alert"></div>
+            
+            <!-- LANGKAH 1: Email -->
+            <div id="step1" class="step active">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="emailInput" placeholder="nama@gmail.com" required>
+                </div>
+                <button id="btnSend" onclick="sendEmail()">Lanjutkan</button>
+                <div id="msgStep1" class="alert"></div>
+            </div>
+
+            <!-- LANGKAH 2: Link & Monetag Ads (5x klik) -->
+            <div id="step2" class="step">
+                <div class="input-group">
+                    <label>Verification Link</label>
+                    <input type="url" id="linkInput" placeholder="https://..." required>
+                </div>
+                <button id="btnAction" onclick="handleAction()">Buka Sistem Verifikasi (0/5)</button>
+                <div id="adStatus" class="ad-status">Dukung developer dengan menonton iklan.</div>
+                <div id="msgStep2" class="alert"></div>
+            </div>
         </div>
 
-        <!-- LANGKAH 2: Masukkan Link Verifikasi -->
-        <div id="step2" class="step">
-            <h1>Langkah 2</h1>
-            <p class="subtitle">Masukkan link verifikasi yang Anda dapatkan.</p>
-            
-            <div class="input-group">
-                <input type="url" id="linkInput" placeholder="https://alight-creative.firebaseapp.com/..." required>
-            </div>
-            <button id="btnVerif" onclick="verifyLink()">Verifikasi Sekarang</button>
-            <div id="msgStep2" class="alert"></div>
+        <!-- SALURAN WHATSAPP (OPSIONAL / TIDAK MEMAKSA) -->
+        <div class="info-card" style="padding: 1.2rem 1.5rem;">
+            <a href="https://whatsapp.com/channel/0029Vb8CNMNEFeXedEF37R2H" target="_blank" class="channel-banner" style="margin-bottom: 0;">
+                <div class="channel-info">
+                    <span class="title">Saluran WhatsApp Resmi</span>
+                    <span class="desc">Gabung untuk info update & tool terbaru</span>
+                </div>
+                <div class="channel-badge">Join</div>
+            </a>
         </div>
 
+        <!-- PANDUAN PENGGUNAAN -->
+        <div class="info-card">
+            <h3>Panduan Sistem</h3>
+            <div class="tutorial-steps">
+                <p><strong>1. Input Email:</strong> Masukkan email aktif untuk memicu pengiriman verifikasi.</p>
+                <p><strong>2. Cek Kotak Masuk:</strong> Buka emailmu, lalu salin full link verifikasi yang masuk.</p>
+                <p><strong>3. Selesaikan Tahapan:</strong> Tempel link di kolom kedua dan selesaikan kuota iklan untuk membuka akses.</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Fungsi untuk menampilkan pesan status
+        const MONETAG_DIRECT_LINK = "https://omg10.com/4/11538145";
+        const TOTAL_ADS_REQUIRED = 5;
+        const WAIT_TIME_SECONDS = 5;
+
+        let currentAdCount = 0;
+        let adCooldown = false;
+
         function showMessage(elementId, type, text) {
             const el = document.getElementById(elementId);
             el.className = `alert ${type}`;
-            el.innerHTML = text;
+            if(type === 'loading') {
+                el.innerHTML = `<span class="loader"></span> ${text}`;
+            } else {
+                el.innerHTML = text;
+            }
         }
 
-        // Fungsi Langkah 1: Kirim Email
         async function sendEmail() {
             const email = document.getElementById('emailInput').value.trim();
             const btn = document.getElementById('btnSend');
@@ -148,7 +327,7 @@
             }
 
             btn.disabled = true;
-            showMessage('msgStep1', 'loading', 'Memproses, mohon tunggu...');
+            showMessage('msgStep1', 'loading', 'Memproses permintaan...');
 
             try {
                 const response = await fetch(`/api/send?email=${encodeURIComponent(email)}`);
@@ -156,74 +335,108 @@
                 
                 try {
                     const data = JSON.parse(textData);
-                    
-                    // Cek jika status API mengembalikan error
                     if (response.ok && data.status !== false) {
-                        showMessage('msgStep1', 'success', 'Berhasil! Melanjutkan ke langkah verifikasi...');
+                        showMessage('msgStep1', 'success', 'Berhasil! Melanjutkan ke verifikasi...');
                         setTimeout(() => {
                             document.getElementById('step1').classList.remove('active');
                             document.getElementById('step2').classList.add('active');
-                        }, 1500);
+                            document.getElementById('adStatus').style.display = 'block';
+                        }, 1200);
                     } else {
-                        const errorMsg = data.message || 'Terjadi kesalahan pada sistem.';
-                        showMessage('msgStep1', 'error', `Gagal: ${errorMsg}`);
+                        showMessage('msgStep1', 'error', data.message || 'Gagal mengirim email.');
                     }
                 } catch (e) {
-                    showMessage('msgStep1', 'error', `Respon Server Bukan JSON: ${textData.substring(0, 100)}...`);
+                    showMessage('msgStep1', 'error', 'Respon server tidak valid.');
                 }
             } catch (error) {
-                showMessage('msgStep1', 'error', 'Gagal menghubungi server. Pastikan web sudah di-deploy ke Vercel.');
+                showMessage('msgStep1', 'error', 'Koneksi jaringan bermasalah.');
             } finally {
                 btn.disabled = false;
             }
         }
 
-        // Fungsi Langkah 2: Verifikasi Link (Otomatis menyisipkan Email)
-        async function verifyLink() {
-            // Ambil data dari input email (Langkah 1) dan input link (Langkah 2)
-            const email = document.getElementById('emailInput').value.trim(); 
+        function handleAction() {
             const link = document.getElementById('linkInput').value.trim();
-            const btn = document.getElementById('btnVerif');
-
-            if (!email) {
-                showMessage('msgStep2', 'error', 'Email tidak ditemukan! Silakan refresh halaman dan ulangi dari awal.');
-                return;
-            }
-
             if (!link) {
-                showMessage('msgStep2', 'error', 'Harap masukkan link verifikasi!');
+                showMessage('msgStep2', 'error', 'Tolong masukkan link verifikasi terlebih dahulu!');
                 return;
             }
+            document.getElementById('msgStep2').style.display = 'none';
+
+            if (currentAdCount < TOTAL_ADS_REQUIRED) {
+                executeAdFlow();
+            } else {
+                executeVerification(link);
+            }
+        }
+
+        function executeAdFlow() {
+            if (adCooldown) return;
+
+            const btn = document.getElementById('btnAction');
+            const status = document.getElementById('adStatus');
+
+            window.open(MONETAG_DIRECT_LINK, '_blank');
+            
+            adCooldown = true;
+            btn.disabled = true;
+            let timeLeft = WAIT_TIME_SECONDS;
+            
+            const timer = setInterval(() => {
+                btn.innerText = `Mohon tunggu (${timeLeft}s)...`;
+                timeLeft--;
+
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    adCooldown = false;
+                    btn.disabled = false;
+                    currentAdCount++;
+                    
+                    status.innerText = `Iklan ditonton: ${currentAdCount}/${TOTAL_ADS_REQUIRED}`;
+                    
+                    if (currentAdCount < TOTAL_ADS_REQUIRED) {
+                        btn.innerText = `Lanjut Nonton Iklan (${currentAdCount}/${TOTAL_ADS_REQUIRED})`;
+                    } else {
+                        btn.innerText = "Verifikasi Sekarang";
+                        btn.style.background = "var(--success)";
+                        btn.style.color = "#ffffff";
+                        status.innerText = "Semua syarat iklan terpenuhi. Silakan verifikasi.";
+                    }
+                }
+            }, 1000);
+        }
+
+        async function executeVerification(link) {
+            const email = document.getElementById('emailInput').value.trim(); 
+            const btn = document.getElementById('btnAction');
 
             btn.disabled = true;
-            showMessage('msgStep2', 'loading', 'Memverifikasi link, mohon tunggu...');
+            showMessage('msgStep2', 'loading', 'Memverifikasi data ke server...');
 
             try {
-                // MENGIRIM KEDUA PARAMETER (email dan link) SEKALIGUS
                 const response = await fetch(`/api/verif?email=${encodeURIComponent(email)}&link=${encodeURIComponent(link)}`);
                 const textData = await response.text();
                 
                 try {
                     const data = JSON.parse(textData);
-                    
                     if (response.ok && data.status !== false) {
-                        const successMsg = data.message || 'Verifikasi Berhasil! Akses telah diberikan.';
-                        showMessage('msgStep2', 'success', successMsg);
-                        
-                        // Sembunyikan form input setelah sukses
-                        document.getElementById('linkInput').style.display = 'none';
+                        showMessage('msgStep2', 'success', data.message || 'Verifikasi Berhasil!');
+                        document.getElementById('linkInput').disabled = true;
                         btn.style.display = 'none';
+                        document.getElementById('adStatus').style.display = 'none';
                     } else {
-                        const errorMsg = data.message || data.error || 'Link tidak valid atau sudah kedaluwarsa.';
-                        showMessage('msgStep2', 'error', `Gagal: ${errorMsg}`);
+                        showMessage('msgStep2', 'error', data.message || data.error || 'Link tidak valid atau kedaluwarsa.');
                     }
                 } catch (e) {
-                    showMessage('msgStep2', 'error', `Respon API Error: ${textData.substring(0, 100)}...`);
+                    showMessage('msgStep2', 'error', 'Kesalahan pada sistem parsing data.');
                 }
             } catch (error) {
-                showMessage('msgStep2', 'error', 'Gagal menghubungi server. Periksa koneksi Anda.');
+                showMessage('msgStep2', 'error', 'Gagal terhubung ke server.');
             } finally {
                 btn.disabled = false;
+                if (currentAdCount >= TOTAL_ADS_REQUIRED) {
+                    btn.innerText = "Verifikasi Sekarang";
+                }
             }
         }
     </script>
