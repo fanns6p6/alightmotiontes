@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/send",
-      "destination": "https://api.znn.my.id/alightmotion/send"
+      "destination": "https://api.znn.my.id/alightmotion/send-v2"
     },
     {
       "source": "/api/verify",
@@ -15,7 +15,7 @@
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
     }
   ]

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlightMotion Verifier</title>
+    <title>AlightMotion Verifier V2</title>
     <style>
         :root {
             --primary: #4F46E5;
@@ -110,14 +110,14 @@
 
     <div class="container">
         <div class="card">
-            <!-- STEP 1: Masukkan Email -->
+            <!-- STEP 1: Masukkan Email (Hit API v2) -->
             <div id="step1" class="step active">
                 <h2>Langkah 1: Request Access</h2>
                 <div class="form-group">
                     <label for="emailInput">Masukkan Alamat Email</label>
                     <input type="email" id="emailInput" placeholder="contoh@domain.com" required>
                 </div>
-                <button id="btnSend">Kirim Permintaan</button>
+                <button id="btnSend">Kirim Permintaan (V2)</button>
             </div>
 
             <!-- STEP 2: Masukkan Link Verifikasi -->
@@ -148,7 +148,7 @@
             logBox.textContent = message;
         }
 
-        // --- STEP 1: SEND EMAIL ---
+        // --- STEP 1: SEND EMAIL (Menggunakan API V2) ---
         btnSend.addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
             if (!email) return alert('Email tidak boleh kosong!');
@@ -158,7 +158,8 @@
             logBox.style.display = 'none';
 
             try {
-                // Catatan: Pastikan nama parameter '?email=' sesuai dengan API asli Anda
+                // Menghubungi /api/send yang di vercel.json diarahkan ke send-v2
+                // Asumsi parameter tetap menggunakan ?email=
                 const url = `/api/send?email=${encodeURIComponent(email)}`;
                 
                 const response = await fetch(url, {
@@ -187,7 +188,7 @@
                 }
             } finally {
                 btnSend.disabled = false;
-                btnSend.textContent = 'Kirim Permintaan';
+                btnSend.textContent = 'Kirim Permintaan (V2)';
             }
         });
 
@@ -201,7 +202,7 @@
             logBox.style.display = 'none';
 
             try {
-                // Catatan: Pastikan nama parameter '?url=' sesuai dengan API asli Anda
+                // Asumsi parameter menggunakan ?url=
                 const url = `/api/verify?url=${encodeURIComponent(link)}`;
                 
                 const response = await fetch(url, {
