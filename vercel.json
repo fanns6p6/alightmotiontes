@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/send",
-      "destination": "https://api.znn.my.id/alightmotion/send-v2"
+      "destination": "https://api.znn.my.id/alightmotion/send"
     },
     {
       "source": "/api/verify",

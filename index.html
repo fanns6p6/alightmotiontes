@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlightMotion Verifier V2</title>
+    <title>AlightMotion Web Tools</title>
     <style>
         :root {
             --primary: #4F46E5;
@@ -110,14 +110,14 @@
 
     <div class="container">
         <div class="card">
-            <!-- STEP 1: Masukkan Email (Hit API v2) -->
+            <!-- STEP 1: Masukkan Email -->
             <div id="step1" class="step active">
                 <h2>Langkah 1: Request Access</h2>
                 <div class="form-group">
                     <label for="emailInput">Masukkan Alamat Email</label>
                     <input type="email" id="emailInput" placeholder="contoh@domain.com" required>
                 </div>
-                <button id="btnSend">Kirim Permintaan (V2)</button>
+                <button id="btnSend">Kirim Permintaan</button>
             </div>
 
             <!-- STEP 2: Masukkan Link Verifikasi -->
@@ -142,13 +142,17 @@
         const btnVerify = document.getElementById('btnVerify');
         const logBox = document.getElementById('logBox');
 
+        // GANTI "TOKEN_ANDA_DISINI" dengan token AM yang Anda miliki jika dibutuhkan.
+        // Jika API menggunakan format Bearer, tulis: 'Bearer TOKEN_ANDA'
+        const MY_API_TOKEN = "TOKEN_ANDA_DISINI"; 
+
         function showLog(message, isError = false) {
             logBox.style.display = 'block';
             logBox.className = 'response-box ' + (isError ? 'error-text' : 'success-text');
             logBox.textContent = message;
         }
 
-        // --- STEP 1: SEND EMAIL (Menggunakan API V2) ---
+        // --- STEP 1: SEND EMAIL ---
         btnSend.addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
             if (!email) return alert('Email tidak boleh kosong!');
@@ -158,13 +162,15 @@
             logBox.style.display = 'none';
 
             try {
-                // Menghubungi /api/send yang di vercel.json diarahkan ke send-v2
-                // Asumsi parameter tetap menggunakan ?email=
                 const url = `/api/send?email=${encodeURIComponent(email)}`;
                 
                 const response = await fetch(url, {
                     method: 'GET',
-                    headers: { 'Accept': 'application/json, text/plain, */*' },
+                    headers: { 
+                        'Accept': 'application/json, text/plain, */*',
+                        // Hapus tanda garis miring ganda (//) di bawah ini jika API wajib pakai Token
+                        // 'Authorization': MY_API_TOKEN 
+                    },
                     cache: 'no-store'
                 });
 
@@ -188,7 +194,7 @@
                 }
             } finally {
                 btnSend.disabled = false;
-                btnSend.textContent = 'Kirim Permintaan (V2)';
+                btnSend.textContent = 'Kirim Permintaan';
             }
         });
 
@@ -202,12 +208,15 @@
             logBox.style.display = 'none';
 
             try {
-                // Asumsi parameter menggunakan ?url=
                 const url = `/api/verify?url=${encodeURIComponent(link)}`;
                 
                 const response = await fetch(url, {
                     method: 'GET',
-                    headers: { 'Accept': 'application/json, text/plain, */*' },
+                    headers: { 
+                        'Accept': 'application/json, text/plain, */*',
+                        // Hapus tanda garis miring ganda (//) di bawah ini jika API wajib pakai Token
+                        // 'Authorization': MY_API_TOKEN 
+                    },
                     cache: 'no-store'
                 });
 
