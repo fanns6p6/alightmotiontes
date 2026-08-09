@@ -137,6 +137,16 @@
             border: 1px solid #1a1a1a; 
         }
 
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline:hover:not(:disabled) {
+            background: #1a1a1a;
+            color: var(--text-main);
+        }
+
         .ad-status { 
             font-size: 0.75rem; 
             color: var(--text-muted); 
@@ -145,7 +155,7 @@
             letter-spacing: 0.5px;
         }
         
-        .step { display: none; }
+        .step { display: none; animation: fadeIn 0.4s ease forwards; }
         .step.active { display: block; }
 
         .alert {
@@ -167,8 +177,48 @@
             border-bottom-color: transparent; border-radius: 50%;
             animation: rotation 0.8s linear infinite; margin-right: 8px; vertical-align: middle;
         }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ================= UI RESULT STATUS ================= */
+        .result-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 0 0.5rem;
+        }
+
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+        }
+        
+        .icon-circle.success { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+        .icon-circle.error { background: rgba(255, 92, 92, 0.1); color: var(--error); }
+
+        .icon-circle svg {
+            width: 32px;
+            height: 32px;
+            stroke: currentColor;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            padding: 0 10px;
+        }
 
         /* CARD INFORMASI & CHANNEL WA OPSIONAL */
         .info-card {
@@ -208,19 +258,10 @@
             border-color: var(--border-focus);
             background: #0a0a0a;
         }
-        .channel-info span {
-            display: block;
-        }
-        .channel-info .title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-        .channel-info .desc {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
+        .channel-info span { display: block; }
+        .channel-info .title { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+        .channel-info .desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+        
         .channel-badge {
             font-size: 0.7rem;
             background: rgba(37, 211, 102, 0.1);
@@ -239,10 +280,10 @@
             flex-direction: column;
             gap: 0.6rem;
         }
-        .tutorial-steps p strong {
-            color: var(--text-main);
-            font-weight: 500;
-        }
+        .tutorial-steps p strong { color: var(--text-main); font-weight: 500; }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -274,6 +315,37 @@
                 <button id="btnAction" onclick="handleAction()">Buka Sistem Verifikasi (0/5)</button>
                 <div id="adStatus" class="ad-status">Dukung developer dengan menonton iklan.</div>
                 <div id="msgStep2" class="alert"></div>
+            </div>
+
+            <!-- RESULT: BERHASIL PREMIUM -->
+            <div id="stepSuccess" class="step">
+                <div class="result-box">
+                    <div class="icon-circle success">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="result-title">Akun Berhasil Premium!</div>
+                    <div class="result-desc">Mantap ngab! Akun lu udah sukses di-upgrade ke Premium. Tinggal login dan nikmatin fiturnya.</div>
+                    <button onclick="location.reload()">Kembali ke Awal</button>
+                </div>
+            </div>
+
+            <!-- RESULT: GAGAL / DITOLAK -->
+            <div id="stepError" class="step">
+                <div class="result-box">
+                    <div class="icon-circle error">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="result-title">Verifikasi Ditolak</div>
+                    <div class="result-desc" id="errorDesc">Waduh, gagal ngab. Coba cek lagi link lu, pastikan belum expired.</div>
+                    <button class="btn-outline" onclick="retryStep2()">Coba Lagi</button>
+                </div>
             </div>
         </div>
 
@@ -419,25 +491,42 @@
                 
                 try {
                     const data = JSON.parse(textData);
+                    
+                    // Kalau berhasil (API kasih sinyal OK)
                     if (response.ok && data.status !== false) {
-                        showMessage('msgStep2', 'success', data.message || 'Verifikasi Berhasil!');
-                        document.getElementById('linkInput').disabled = true;
-                        btn.style.display = 'none';
-                        document.getElementById('adStatus').style.display = 'none';
-                    } else {
-                        showMessage('msgStep2', 'error', data.message || data.error || 'Link tidak valid atau kedaluwarsa.');
+                        document.getElementById('step2').classList.remove('active');
+                        document.getElementById('stepSuccess').classList.add('active');
+                    } 
+                    // Kalau gagal (API nolak)
+                    else {
+                        document.getElementById('step2').classList.remove('active');
+                        document.getElementById('stepError').classList.add('active');
+                        document.getElementById('errorDesc').innerText = data.message || data.error || 'Waduh, gagal ngab. Coba cek lagi link lu, pastikan belum expired.';
                     }
                 } catch (e) {
-                    showMessage('msgStep2', 'error', 'Kesalahan pada sistem parsing data.');
+                    // Kalau JSON dari API hancur/salah format
+                    document.getElementById('step2').classList.remove('active');
+                    document.getElementById('stepError').classList.add('active');
+                    document.getElementById('errorDesc').innerText = 'Kesalahan pada sistem parsing data server.';
                 }
             } catch (error) {
-                showMessage('msgStep2', 'error', 'Gagal terhubung ke server.');
+                // Kalau internet down / server error
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('stepError').classList.add('active');
+                document.getElementById('errorDesc').innerText = 'Gagal terhubung ke server. Pastikan koneksi aman.';
             } finally {
                 btn.disabled = false;
                 if (currentAdCount >= TOTAL_ADS_REQUIRED) {
                     btn.innerText = "Verifikasi Sekarang";
                 }
             }
+        }
+
+        function retryStep2() {
+            // Balikin lagi ke input link kalau mau coba lagi
+            document.getElementById('stepError').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('msgStep2').style.display = 'none';
         }
     </script>
 </body>
