@@ -54,6 +54,7 @@
             border-radius: 6px;
             font-size: 16px;
             box-sizing: border-box;
+            margin-bottom: 10px;
         }
         input:focus {
             outline: none;
@@ -99,6 +100,7 @@
         }
         .error-text { color: #EF4444; }
         .success-text { color: #10B981; }
+        .info-text { font-size: 12px; color: #6B7280; margin-top: -5px; display: block; margin-bottom: 15px; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -110,11 +112,18 @@
 
     <div class="container">
         <div class="card">
+            <!-- INPUT TOKEN (Berlaku untuk semua step) -->
+            <div id="tokenSection" class="form-group">
+                <label for="tokenInput">🔑 Token AM (Authorization)</label>
+                <input type="text" id="tokenInput" placeholder="Masukkan Token API di sini" required>
+                <span class="info-text">Token ini wajib diisi agar API tidak menolak request (Error 401).</span>
+            </div>
+
             <!-- STEP 1: Masukkan Email -->
             <div id="step1" class="step active">
                 <h2>Langkah 1: Request Access</h2>
                 <div class="form-group">
-                    <label for="emailInput">Masukkan Alamat Email</label>
+                    <label for="emailInput">📧 Masukkan Alamat Email</label>
                     <input type="email" id="emailInput" placeholder="contoh@domain.com" required>
                 </div>
                 <button id="btnSend">Kirim Permintaan</button>
@@ -124,7 +133,7 @@
             <div id="step2" class="step">
                 <h2>Langkah 2: Verifikasi Link</h2>
                 <div class="form-group">
-                    <label for="linkInput">Masukkan Link Verifikasi</label>
+                    <label for="linkInput">🔗 Masukkan Link Verifikasi</label>
                     <input type="url" id="linkInput" placeholder="https://..." required>
                 </div>
                 <button id="btnVerify">Verifikasi Sekarang</button>
@@ -142,10 +151,6 @@
         const btnVerify = document.getElementById('btnVerify');
         const logBox = document.getElementById('logBox');
 
-        // GANTI "TOKEN_ANDA_DISINI" dengan token AM yang Anda miliki jika dibutuhkan.
-        // Jika API menggunakan format Bearer, tulis: 'Bearer TOKEN_ANDA'
-        const MY_API_TOKEN = "https://api.znn.my.id"; 
-
         function showLog(message, isError = false) {
             logBox.style.display = 'block';
             logBox.className = 'response-box ' + (isError ? 'error-text' : 'success-text');
@@ -154,7 +159,10 @@
 
         // --- STEP 1: SEND EMAIL ---
         btnSend.addEventListener('click', async () => {
+            const token = document.getElementById('tokenInput').value;
             const email = document.getElementById('emailInput').value;
+            
+            if (!token) return alert('Token AM tidak boleh kosong!');
             if (!email) return alert('Email tidak boleh kosong!');
 
             btnSend.disabled = true;
@@ -168,8 +176,7 @@
                     method: 'GET',
                     headers: { 
                         'Accept': 'application/json, text/plain, */*',
-                        // Hapus tanda garis miring ganda (//) di bawah ini jika API wajib pakai Token
-                        // 'Authorization': MY_API_TOKEN 
+                        'Authorization': token // Mengirim Token dari input box ke API
                     },
                     cache: 'no-store'
                 });
@@ -187,11 +194,7 @@
                     showLog(`Gagal (Status: ${response.status}):\n${data}`, true);
                 }
             } catch (error) {
-                if (window.location.protocol === 'file:') {
-                    showLog("Error: Harus dijalankan dari Vercel, bukan dari file lokal (file://).", true);
-                } else {
-                    showLog("Error Koneksi: " + error.message, true);
-                }
+                showLog("Error Koneksi: " + error.message, true);
             } finally {
                 btnSend.disabled = false;
                 btnSend.textContent = 'Kirim Permintaan';
@@ -200,7 +203,10 @@
 
         // --- STEP 2: VERIFY LINK ---
         btnVerify.addEventListener('click', async () => {
+            const token = document.getElementById('tokenInput').value;
             const link = document.getElementById('linkInput').value;
+            
+            if (!token) return alert('Token AM hilang! Pastikan kolom token terisi.');
             if (!link) return alert('Link verifikasi tidak boleh kosong!');
 
             btnVerify.disabled = true;
@@ -214,8 +220,7 @@
                     method: 'GET',
                     headers: { 
                         'Accept': 'application/json, text/plain, */*',
-                        // Hapus tanda garis miring ganda (//) di bawah ini jika API wajib pakai Token
-                        // 'Authorization': MY_API_TOKEN 
+                        'Authorization': token // Mengirim Token dari input box ke API
                     },
                     cache: 'no-store'
                 });
