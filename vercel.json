@@ -1,12 +1,10 @@
 {
-  "rewrites": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "source": "/api/send",
-      "destination": "https://api.jerexd.my.id/api/am/send?apikey=vannzstore"
-    },
-    {
-      "source": "/api/verif",
-      "destination": "https://api.jerexd.my.id/api/am/verif?apikey=vannzstore"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }

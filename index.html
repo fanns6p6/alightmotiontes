@@ -2,536 +2,274 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VELTRIX | Secure Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Tools - Jerexd API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-base: #000000;
-            --bg-card: #0a0a0a;
-            --bg-card-hover: #121212;
-            --border-color: #222222;
-            --border-focus: #555555;
-            --text-main: #f5f5f7;
-            --text-muted: #888888;
-            --accent: #ffffff;
-            --accent-hover: #e0e0e0;
-            --error: #ff5c5c;
-            --success: #22c55e;
-            --wa-color: #25D366;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 1.5rem;
-            background-image: radial-gradient(circle at 50% 0%, #151515 0%, transparent 70%);
-            overflow-x: hidden;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        #main-content {
-            display: block;
-            width: 100%;
-            max-width: 420px;
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .container {
-            background: var(--bg-card);
-            padding: 2.2rem 2rem;
-            border-radius: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            width: 100%;
-            text-align: center;
-            margin-bottom: 1.2rem;
-        }
-
-        .brand-wrapper {
-            margin-bottom: 1.8rem;
-        }
-
-        .brand {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            color: var(--text-main);
-            margin-bottom: 0.3rem;
-        }
-
-        .subtitle { 
-            color: var(--text-muted); 
-            font-size: 0.8rem; 
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .input-group { 
-            margin-bottom: 1.2rem; 
-            text-align: left; 
-        }
-        
-        label {
-            display: block; 
-            font-size: 0.7rem; 
-            text-transform: uppercase;
-            letter-spacing: 1.5px; 
-            color: var(--text-muted); 
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        input {
-            width: 100%; 
-            padding: 0.95rem 1rem; 
-            background: #050505;
-            border: 1px solid var(--border-color); 
-            border-radius: 14px;
-            color: var(--text-main); 
-            font-size: 0.95rem; 
-            outline: none;
-            transition: all 0.25s ease;
-            -webkit-user-select: text;
-            user-select: text;
-        }
-        input:focus { 
-            border-color: var(--border-focus); 
-            background: #000000;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.03); 
-        }
-
-        button {
-            width: 100%; 
-            padding: 0.95rem; 
-            border: none; 
-            border-radius: 14px;
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            cursor: pointer; 
-            transition: all 0.25s ease;
-            margin-top: 0.4rem; 
-            background: var(--accent); 
-            color: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        button:hover:not(:disabled) { 
-            background: var(--accent-hover); 
-            transform: translateY(-1px); 
-        }
-        button:active:not(:disabled) {
-            transform: translateY(0);
-        }
-        button:disabled { 
-            background: #151515 !important; 
-            color: #888888 !important; 
-            cursor: not-allowed; 
-            border: 1px solid #1a1a1a; 
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-        .btn-outline:hover:not(:disabled) {
-            background: #1a1a1a;
-            color: var(--text-main);
-        }
-
-        .ad-status { 
-            font-size: 0.75rem; 
-            color: var(--text-muted); 
-            margin-top: 1rem; 
-            display: none; 
-            letter-spacing: 0.5px;
-        }
-        
-        .step { display: none; animation: fadeIn 0.4s ease forwards; }
-        .step.active { display: block; }
-
-        .alert {
-            margin-top: 1rem; 
-            padding: 0.85rem; 
-            border-radius: 12px;
-            font-size: 0.8rem; 
-            display: none; 
-            text-align: center; 
-            border: 1px solid;
-            line-height: 1.4;
-        }
-        .alert.error { background: rgba(255, 92, 92, 0.05); color: var(--error); border-color: rgba(255,92,92,0.15); display: block; }
-        .alert.success { background: rgba(34, 197, 94, 0.05); color: var(--success); border-color: rgba(34,197,94,0.15); display: block; }
-        .alert.loading { background: transparent; color: var(--text-main); border-color: var(--border-color); display: block; }
-
         .loader {
-            display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor;
-            border-bottom-color: transparent; border-radius: 50%;
-            animation: rotation 0.8s linear infinite;
-        }
-
-        /* ================= UI RESULT STATUS ================= */
-        .result-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem 0 0.5rem;
-        }
-
-        .icon-circle {
-            width: 64px;
-            height: 64px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.2rem;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
         }
-        
-        .icon-circle.success { background: rgba(34, 197, 94, 0.1); color: var(--success); }
-        .icon-circle.error { background: rgba(255, 92, 92, 0.1); color: var(--error); }
-
-        .icon-circle svg {
-            width: 32px;
-            height: 32px;
-            stroke: currentColor;
-        }
-
-        .result-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 0.5rem;
-        }
-
-        .result-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 1.5rem;
-            padding: 0 10px;
-        }
-
-        /* CARD INFORMASI & CHANNEL WA OPSIONAL */
-        .info-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 1.5rem;
-            width: 100%;
-            max-width: 420px;
-            text-align: left;
-            margin-bottom: 1rem;
-        }
-        
-        .info-card h3 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .channel-banner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #050505;
-            border: 1px solid var(--border-color);
-            padding: 0.9rem 1rem;
-            border-radius: 14px;
-            margin-bottom: 1.2rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.25s ease;
-        }
-        .channel-banner:hover {
-            border-color: var(--border-focus);
-            background: #0a0a0a;
-        }
-        .channel-info span { display: block; }
-        .channel-info .title { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
-        .channel-info .desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-        
-        .channel-badge {
-            font-size: 0.7rem;
-            background: rgba(37, 211, 102, 0.1);
-            color: var(--wa-color);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            border: 1px solid rgba(37, 211, 102, 0.2);
-        }
-
-        .tutorial-steps {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-        .tutorial-steps p strong { color: var(--text-main); font-weight: 500; }
-
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
-    <!-- KONTEN UTAMA -->
-    <div id="main-content">
-        <div class="container">
-            <div class="brand-wrapper">
-                <div class="brand">Veltrix</div>
-                <div class="subtitle">Secure Verification System</div>
+    <div class="max-w-3xl mx-auto pt-10 px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header & Status Kredit -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col sm:flex-row justify-between items-center">
+            <div class="text-center sm:text-left mb-4 sm:mb-0">
+                <h1 class="text-2xl font-bold text-slate-900">Jerexd Premium API</h1>
+                <p class="text-slate-500 text-sm">Bayar 1K, dapat 1x pemakaian fitur.</p>
             </div>
             
-            <!-- LANGKAH 1: Email -->
-            <div id="step1" class="step active">
-                <div class="input-group">
-                    <label>Email Address</label>
-                    <input type="email" id="emailInput" placeholder="nama@gmail.com" required>
+            <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <div class="text-right">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Sisa Kredit Anda</p>
+                    <p id="kreditTeks" class="text-2xl font-black text-indigo-600">0 <span class="text-sm font-medium text-slate-500">Token</span></p>
                 </div>
-                <button id="btnSend" onclick="sendEmail()">Lanjutkan</button>
-                <div id="msgStep1" class="alert"></div>
-            </div>
-
-            <!-- LANGKAH 2: Link & Monetag Ads (5x klik) -->
-            <div id="step2" class="step">
-                <div class="input-group">
-                    <label>Verification Link</label>
-                    <input type="url" id="linkInput" placeholder="https://..." required>
-                </div>
-                <button id="btnAction" onclick="handleAction()">Buka Sistem Verifikasi (0/5)</button>
-                <div id="adStatus" class="ad-status">Dukung developer dengan menonton iklan.</div>
-                <div id="msgStep2" class="alert"></div>
-            </div>
-
-            <!-- RESULT: BERHASIL PREMIUM -->
-            <div id="stepSuccess" class="step">
-                <div class="result-box">
-                    <div class="icon-circle success">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                    </div>
-                    <div class="result-title">Akun Sukses Menjadi Premium!</div>
-                    <div class="result-desc">Mantap ngab! Akun lu udah sukses di-upgrade ke Premium. Tinggal login dan nikmatin fiturnya.</div>
-                    <button onclick="location.reload()">Kembali ke Awal</button>
-                </div>
-            </div>
-
-            <!-- RESULT: GAGAL / DITOLAK -->
-            <div id="stepError" class="step">
-                <div class="result-box">
-                    <div class="icon-circle error">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                        </svg>
-                    </div>
-                    <div class="result-title">Verifikasi Ditolak</div>
-                    <div class="result-desc" id="errorDesc">Waduh, gagal ngab. Coba cek lagi link lu, pastikan belum expired.</div>
-                    <button class="btn-outline" onclick="retryStep2()">Coba Lagi</button>
-                </div>
+                <button onclick="beliKredit()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition">
+                    + Beli (Rp 1.000)
+                </button>
             </div>
         </div>
 
-        <!-- SALURAN WHATSAPP (OPSIONAL / TIDAK MEMAKSA) -->
-        <div class="info-card" style="padding: 1.2rem 1.5rem;">
-            <a href="https://whatsapp.com/channel/0029Vb8CNMNEFeXedEF37R2H" target="_blank" class="channel-banner" style="margin-bottom: 0;">
-                <div class="channel-info">
-                    <span class="title">Saluran WhatsApp Resmi</span>
-                    <span class="desc">Gabung untuk info update & tool terbaru</span>
-                </div>
-                <div class="channel-badge">Join</div>
-            </a>
+        <!-- Peringatan API Key (Hapus bagian ini jika sudah di-deploy) -->
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8 text-sm rounded-r-lg" role="alert">
+            <p class="font-bold">Perhatian Pemilik Web:</p>
+            <p>Masukkan API Key RamaShop Anda di dalam kode HTML (baris 131) sebelum di-deploy.</p>
         </div>
 
-        <!-- PANDUAN PENGGUNAAN -->
-        <div class="info-card">
-            <h3>Panduan Sistem</h3>
-            <div class="tutorial-steps">
-                <p><strong>1. Input Email:</strong> Masukkan email aktif untuk memicu pengiriman verifikasi.</p>
-                <p><strong>2. Cek Kotak Masuk:</strong> Buka emailmu, lalu salin full link verifikasi yang masuk.</p>
-                <p><strong>3. Selesaikan Tahapan:</strong> Tempel link di kolom kedua dan selesaikan kuota iklan untuk membuka akses.</p>
+        <!-- Daftar Tools -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Tool 1: AM Send -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between hover:shadow-md transition">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-500"></span> AM Send
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6">Gunakan fitur pengiriman pesan dari Jerexd API. Membutuhkan 1 Token per penggunaan.</p>
+                </div>
+                <button onclick="gunakanTool('send')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-200 shadow-sm flex justify-center items-center gap-2">
+                    Gunakan (Pakai 1 Token)
+                </button>
+            </div>
+
+            <!-- Tool 2: AM Verif -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between hover:shadow-md transition">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span> AM Verif
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6">Gunakan fitur verifikasi otomatis dari Jerexd API. Membutuhkan 1 Token per penggunaan.</p>
+                </div>
+                <button onclick="gunakanTool('verif')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-200 shadow-sm flex justify-center items-center gap-2">
+                    Gunakan (Pakai 1 Token)
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal QRIS (Hidden by default) -->
+    <div id="qrisModal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden flex items-center justify-center z-50 px-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
+            <div class="bg-indigo-600 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-white font-bold text-lg">Beli 1 Token Akses</h3>
+                <button onclick="tutupModalQRIS()" class="text-white hover:text-indigo-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6 text-center">
+                <div id="qrisLoading" class="flex flex-col items-center justify-center py-8">
+                    <div class="loader mb-4"></div>
+                    <p class="text-slate-500 font-medium">Membuat QRIS...</p>
+                </div>
+                
+                <div id="qrisContent" class="hidden">
+                    <p class="text-slate-600 mb-2 text-sm">Silakan scan kode QRIS menggunakan e-Wallet / M-Banking.</p>
+                    <h2 id="qrisNominal" class="text-3xl font-black text-slate-800 mb-4 tracking-tight">Rp 0</h2>
+                    <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-100 inline-block mb-4">
+                        <img id="qrisImage" src="" alt="QRIS Code" class="w-48 h-48">
+                    </div>
+                    <div class="flex items-center justify-center gap-3 text-indigo-600 text-sm font-semibold mb-2 bg-indigo-50 py-2 px-4 rounded-full w-max mx-auto">
+                        <div class="loader" style="width: 16px; height: 16px; border-width: 2px;"></div>
+                        Menunggu pembayaran...
+                    </div>
+                    <p class="text-xs text-slate-400 mt-4">Pengecekan otomatis. Halaman akan tertutup jika berhasil.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hasil (Hidden by default) -->
+    <div id="resultModal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden flex items-center justify-center z-50 px-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
+            <div class="bg-emerald-600 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-white font-bold text-lg" id="modalTitle">Mengeksekusi Tool...</h3>
+                <button onclick="document.getElementById('resultModal').classList.add('hidden')" class="text-white hover:text-emerald-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <p class="mb-4 text-slate-600 font-medium">Hasil Response API Jerexd:</p>
+                <div class="bg-slate-900 rounded-xl p-4 max-h-96 overflow-y-auto shadow-inner">
+                    <pre id="toolResult" class="text-emerald-400 text-sm font-mono whitespace-pre-wrap break-words"></pre>
+                </div>
+                <div class="mt-6 text-right">
+                    <button onclick="document.getElementById('resultModal').classList.add('hidden')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-2 px-6 rounded-lg transition">
+                        Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const MONETAG_DIRECT_LINK = "https://omg10.com/4/11538145";
-        const TOTAL_ADS_REQUIRED = 5;
-        const WAIT_TIME_SECONDS = 5;
+        // ==========================================
+        // KONFIGURASI API 
+        // ==========================================
+        const RAMASHOP_API_KEY = "ISI_DENGAN_API_KEY_RAMASHOP_ANDA_YANG_BARU"; 
+        const JEREXD_API_KEY = "vannzstore"; 
+        const HARGA_PER_TOKEN = 1000;
+        
+        let intervalCekStatus = null;
+        let depositIdSaatIni = null;
 
-        let currentAdCount = 0;
-        let adCooldown = false;
+        // Ambil jumlah token dari localStorage (penyimpanan browser)
+        let sisaKredit = parseInt(localStorage.getItem('jerexd_token')) || 0;
+        updateKreditUI();
 
-        function showMessage(elementId, type, text) {
-            const el = document.getElementById(elementId);
-            el.className = `alert ${type}`;
-            if(type === 'loading') {
-                el.innerHTML = `<span class="loader"></span> ${text}`;
-            } else {
-                el.innerHTML = text;
+        // Update tampilan angka di layar
+        function updateKreditUI() {
+            document.getElementById('kreditTeks').innerHTML = `${sisaKredit} <span class="text-sm font-medium text-slate-500">Token</span>`;
+        }
+
+        // Simpan kredit ke localStorage
+        function simpanKredit(jumlah) {
+            sisaKredit = jumlah;
+            localStorage.setItem('jerexd_token', sisaKredit);
+            updateKreditUI();
+        }
+
+        // ==========================================
+        // ALUR 1: BELI TOKEN (QRIS)
+        // ==========================================
+        async function beliKredit() {
+            const modal = document.getElementById('qrisModal');
+            const loading = document.getElementById('qrisLoading');
+            const content = document.getElementById('qrisContent');
+            
+            modal.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            content.classList.add('hidden');
+
+            try {
+                const respon = await fetch('https://ramashop.my.id/api/public/deposit/create', {
+                    method: 'POST',
+                    headers: {
+                        'X-API-Key': RAMASHOP_API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount: HARGA_PER_TOKEN, method: 'qris' })
+                });
+
+                const data = await respon.json();
+
+                if (respon.ok && data.success) {
+                    document.getElementById('qrisNominal').innerText = `Rp ${data.data.totalAmount.toLocaleString('id-ID')}`;
+                    document.getElementById('qrisImage').src = data.data.qrImage;
+                    depositIdSaatIni = data.data.depositId;
+                    
+                    loading.classList.add('hidden');
+                    content.classList.remove('hidden');
+
+                    mulaiCekPembayaran(depositIdSaatIni);
+                } else {
+                    alert('Gagal membuat QRIS: ' + (data.message || 'Error server'));
+                    tutupModalQRIS();
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan koneksi saat membuat QRIS.');
+                tutupModalQRIS();
             }
         }
 
-        async function sendEmail() {
-            const email = document.getElementById('emailInput').value.trim();
-            const btn = document.getElementById('btnSend');
+        // Cek status QRIS tiap 5 detik
+        function mulaiCekPembayaran(depositId) {
+            if (intervalCekStatus) clearInterval(intervalCekStatus);
 
-            if (!email) {
-                showMessage('msgStep1', 'error', 'Harap masukkan alamat email terlebih dahulu!');
+            intervalCekStatus = setInterval(async () => {
+                try {
+                    const respon = await fetch(`https://ramashop.my.id/api/public/deposit/status/${depositId}`, {
+                        headers: { 'X-API-Key': RAMASHOP_API_KEY }
+                    });
+                    const data = await respon.json();
+
+                    if (respon.ok && data.status) {
+                        if (data.data.status === 'success' || data.data.status === 'already') {
+                            // PEMBAYARAN BERHASIL -> Tambah 1 Token
+                            clearInterval(intervalCekStatus);
+                            tutupModalQRIS();
+                            
+                            simpanKredit(sisaKredit + 1);
+                            alert("✅ Pembayaran Berhasil! Anda mendapatkan 1 Token Akses. Silakan gunakan fitur yang tersedia.");
+                        }
+                    }
+                } catch (error) {
+                    console.error('Pengecekan status error', error);
+                }
+            }, 5000);
+        }
+
+        function tutupModalQRIS() {
+            document.getElementById('qrisModal').classList.add('hidden');
+            if (intervalCekStatus) clearInterval(intervalCekStatus);
+        }
+
+        // ==========================================
+        // ALUR 2: GUNAKAN TOOL (MENGURANGI TOKEN)
+        // ==========================================
+        async function gunakanTool(tipeTool) {
+            // 1. CEK TOKEN TERLEBIH DAHULU
+            if (sisaKredit <= 0) {
+                alert("❌ Token Anda Habis (0).\nSilakan klik tombol '+ Beli (Rp 1.000)' terlebih dahulu.");
                 return;
             }
 
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loader"></span> Memproses...';
-            showMessage('msgStep1', 'loading', 'Memproses permintaan...');
+            // 2. JIKA ADA TOKEN, KURANGI 1 DAN SIMPAN
+            simpanKredit(sisaKredit - 1);
+
+            // 3. JALANKAN API JEREXD
+            const urlTarget = tipeTool === 'send' 
+                ? `https://api.jerexd.my.id/api/am/send?apikey=${JEREXD_API_KEY}`
+                : `https://api.jerexd.my.id/api/am/verif?apikey=${JEREXD_API_KEY}`;
+            
+            const resultModal = document.getElementById('resultModal');
+            document.getElementById('modalTitle').innerText = `Response: AM ${tipeTool.toUpperCase()}`;
+            document.getElementById('toolResult').innerText = "Sedang mengambil data dari Jerexd API... ⏳\nHarap tunggu sebentar.";
+            document.getElementById('toolResult').classList.remove('text-red-400');
+            resultModal.classList.remove('hidden');
 
             try {
-                const response = await fetch(`/api/send?email=${encodeURIComponent(email)}`);
-                const textData = await response.text();
+                const respon = await fetch(urlTarget);
+                const contentType = respon.headers.get("content-type");
+                let hasilAkhir = "";
                 
-                try {
-                    const data = JSON.parse(textData);
-                    if (response.ok && data.status !== false) {
-                        showMessage('msgStep1', 'success', 'Berhasil! Melanjutkan ke verifikasi...');
-                        setTimeout(() => {
-                            document.getElementById('step1').classList.remove('active');
-                            document.getElementById('step2').classList.add('active');
-                            document.getElementById('adStatus').style.display = 'block';
-                        }, 1200);
-                    } else {
-                        showMessage('msgStep1', 'error', data.message || 'Gagal mengirim email.');
-                    }
-                } catch (e) {
-                    showMessage('msgStep1', 'error', 'Respon server tidak valid.');
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await respon.json();
+                    hasilAkhir = JSON.stringify(data, null, 2);
+                } else {
+                    hasilAkhir = await respon.text();
                 }
+
+                document.getElementById('toolResult').innerText = hasilAkhir;
             } catch (error) {
-                showMessage('msgStep1', 'error', 'Koneksi jaringan bermasalah.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'Lanjutkan';
+                document.getElementById('toolResult').innerText = `❌ Error mengambil data Jerexd API:\n${error.message}\n\nCatatan: Token Anda tetap terpotong karena request sudah terkirim ke server Jerexd.`;
+                document.getElementById('toolResult').classList.add('text-red-400');
             }
-        }
-
-        function handleAction() {
-            const link = document.getElementById('linkInput').value.trim();
-            if (!link) {
-                showMessage('msgStep2', 'error', 'Tolong masukkan link verifikasi terlebih dahulu!');
-                return;
-            }
-            document.getElementById('msgStep2').style.display = 'none';
-
-            if (currentAdCount < TOTAL_ADS_REQUIRED) {
-                executeAdFlow();
-            } else {
-                executeVerification(link);
-            }
-        }
-
-        function executeAdFlow() {
-            if (adCooldown) return;
-
-            const btn = document.getElementById('btnAction');
-            const status = document.getElementById('adStatus');
-
-            window.open(MONETAG_DIRECT_LINK, '_blank');
-            
-            adCooldown = true;
-            btn.disabled = true;
-            let timeLeft = WAIT_TIME_SECONDS;
-            
-            const timer = setInterval(() => {
-                btn.innerHTML = `Mohon tunggu (${timeLeft}s)...`;
-                timeLeft--;
-
-                if (timeLeft < 0) {
-                    clearInterval(timer);
-                    adCooldown = false;
-                    btn.disabled = false;
-                    currentAdCount++;
-                    
-                    status.innerText = `Iklan ditonton: ${currentAdCount}/${TOTAL_ADS_REQUIRED}`;
-                    
-                    if (currentAdCount < TOTAL_ADS_REQUIRED) {
-                        btn.innerHTML = `Lanjut Nonton Iklan (${currentAdCount}/${TOTAL_ADS_REQUIRED})`;
-                    } else {
-                        btn.innerHTML = "Verifikasi Sekarang";
-                        btn.style.background = "var(--accent)"; // Berubah jadi putih
-                        btn.style.color = "#000000";
-                        status.innerText = "Semua syarat iklan terpenuhi. Silakan verifikasi.";
-                    }
-                }
-            }, 1000);
-        }
-
-        async function executeVerification(link) {
-            const email = document.getElementById('emailInput').value.trim(); 
-            const btn = document.getElementById('btnAction');
-
-            btn.disabled = true;
-            // Menambahkan animasi loading ke dalam tombol saat diproses
-            btn.innerHTML = '<span class="loader"></span> Memproses...';
-            showMessage('msgStep2', 'loading', 'Memverifikasi data ke server...');
-
-            try {
-                const response = await fetch(`/api/verif?email=${encodeURIComponent(email)}&link=${encodeURIComponent(link)}`);
-                const textData = await response.text();
-                
-                try {
-                    const data = JSON.parse(textData);
-                    
-                    if (response.ok && data.status !== false) {
-                        document.getElementById('step2').classList.remove('active');
-                        document.getElementById('stepSuccess').classList.add('active');
-                    } 
-                    else {
-                        document.getElementById('step2').classList.remove('active');
-                        document.getElementById('stepError').classList.add('active');
-                        document.getElementById('errorDesc').innerText = data.message || data.error || 'Waduh, gagal ngab. Coba cek lagi link lu, pastikan belum expired.';
-                    }
-                } catch (e) {
-                    document.getElementById('step2').classList.remove('active');
-                    document.getElementById('stepError').classList.add('active');
-                    document.getElementById('errorDesc').innerText = 'Kesalahan pada sistem parsing data server.';
-                }
-            } catch (error) {
-                document.getElementById('step2').classList.remove('active');
-                document.getElementById('stepError').classList.add('active');
-                document.getElementById('errorDesc').innerText = 'Gagal terhubung ke server. Pastikan koneksi aman.';
-            } finally {
-                btn.disabled = false;
-                if (currentAdCount >= TOTAL_ADS_REQUIRED) {
-                    btn.innerHTML = "Verifikasi Sekarang";
-                    btn.style.background = "var(--accent)";
-                    btn.style.color = "#000000";
-                }
-            }
-        }
-
-        function retryStep2() {
-            document.getElementById('stepError').classList.remove('active');
-            document.getElementById('step2').classList.add('active');
-            document.getElementById('msgStep2').style.display = 'none';
         }
     </script>
 </body>
