@@ -1,10 +1,8 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/api/ramashop/:match*",
+      "destination": "https://ramashop.my.id/api/:match*"
     }
   ]
 }
