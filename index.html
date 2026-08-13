@@ -1,356 +1,401 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Tools - Jerexd API</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Custom scrollbar for output */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1e293b; 
-            border-radius: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #64748b; 
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f6fb">
+  <meta name="description" content="Aktivasi Alight Motion Premium melalui layanan ZNN.">
+  <title>Alight Motion Premium</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-200 selection:text-indigo-900">
+<body>
+  <div class="bg-glow bg-glow-one" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-two" aria-hidden="true"></div>
 
-    <div class="max-w-3xl mx-auto pt-10 px-4 sm:px-6 lg:px-8">
-        
-        <!-- Header & Status Kuota -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col sm:flex-row justify-between items-center transition-all hover:shadow-md">
-            <div class="text-center sm:text-left mb-4 sm:mb-0">
-                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Jerexd Premium API</h1>
-                <p class="text-slate-500 text-sm mt-1">Bayar Rp1.000, Buka Semua Fitur sekaligus.</p>
-            </div>
-            
-            <div class="flex flex-col items-end gap-3 w-full sm:w-auto">
-                <!-- Indikator Kuota -->
-                <div class="flex gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100 w-full justify-between sm:w-auto">
-                    <div class="text-center px-4 border-r border-slate-200">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Kuota Send</p>
-                        <p id="teksKuotaSend" class="text-2xl font-black text-blue-600 leading-none">0</p>
-                    </div>
-                    <div class="text-center px-4">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Kuota Verif</p>
-                        <p id="teksKuotaVerif" class="text-2xl font-black text-emerald-600 leading-none">0</p>
-                    </div>
-                </div>
-                
-                <!-- Tombol Beli Paket -->
-                <button onclick="beliPaket()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-colors duration-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                    </svg>
-                    Beli Paket (Rp 1.000)
-                </button>
-            </div>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ZNN">
+        <span class="brand-mark">Z</span>
+        <span class="brand-copy">
+          <strong>ZNN</strong>
+          <small>Activation Service</small>
+        </span>
+      </a>
+
+      <div class="service-actions">
+        <button
+          class="tool-nav-button active"
+          id="main-toggle"
+          type="button"
+          aria-controls="activation-card guide-card"
+          aria-current="page"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m4 10 8-6 8 6v9H4v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M9.5 19v-5h5v5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+          <span>Utama</span>
+        </button>
+
+        <button
+          class="tool-nav-button"
+          id="bulk-toggle"
+          type="button"
+          aria-controls="tools-panel"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5.5h6.5V12H4zM13.5 5.5H20V12h-6.5zM4 15h6.5v3.5H4zM13.5 15H20v3.5h-6.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Bulk</span>
+        </button>
+
+        <button
+          class="tool-nav-button"
+          id="inbox-toggle"
+          type="button"
+          aria-controls="tools-panel"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6.8h16v10.4H4z" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Baca Email</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow" id="hero-eyebrow">ALIGHT MOTION</span>
+      <h1 id="hero-title">Aktivasi Premium</h1>
+      <p id="hero-description">Kirim link verifikasi ke email, lalu selesaikan aktivasi dari satu halaman.</p>
+    </section>
+
+    <section class="tools-card hidden" id="tools-panel" aria-labelledby="tools-title">
+      <div class="tools-heading">
+        <div>
+          <span class="tools-kicker">TOOLS</span>
+          <h2 id="tools-title">Tools Alight Motion</h2>
+          <p id="tools-description">Buat beberapa email Alight Motion yang Premium-nya langsung aktif.</p>
         </div>
 
-        <div class="bg-amber-50 border-l-4 border-amber-500 text-amber-700 p-4 mb-8 text-sm rounded-r-lg flex gap-3 items-start" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        <button class="tools-close" id="tools-close" type="button" aria-label="Tutup tools">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="tool-pane" id="bulk-panel" aria-label="Bulk email">
+        <form id="bulk-form" novalidate>
+          <div class="field-group">
+            <label for="bulk-amount">Jumlah email</label>
+            <div class="field-shell">
+              <span class="field-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M7 4.5h10M7 9.5h10M7 14.5h6M5 4.5h.01M5 9.5h.01M5 14.5h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input id="bulk-amount" name="amount" type="number" inputmode="numeric" min="1" max="100" step="1" value="1" required>
+            </div>
+            <span class="field-help">Minimal 1 dan maksimal 100 email Premium.</span>
+          </div>
+
+          <button class="primary-button tool-submit" id="bulk-submit" type="submit">
+            <span id="bulk-button-text">Buat email Premium</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <div>
-                <p class="font-bold">Perhatian Pemilik Web:</p>
-                <p>Masukkan API Key RamaShop dan Jerexd API Anda di dalam kode HTML bagian konfigurasi (Baris 140) sebelum di-deploy.</p>
+          </button>
+        </form>
+
+        <div id="bulk-notice" class="notice hidden" role="status" aria-live="polite"></div>
+        <div id="bulk-results" class="tool-results hidden"></div>
+      </div>
+
+      <div class="tool-pane hidden" id="inbox-panel" aria-label="Baca email">
+        <form id="inbox-form" novalidate>
+          <div class="field-group">
+            <label for="inbox-email">Email yang ingin dicek</label>
+            <div class="field-shell">
+              <span class="field-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 6.8h16v10.4H4z" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <input id="inbox-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="alamat@tempmail.com" required>
             </div>
+            <span class="field-help">Masukkan email secara manual. Bulk tidak akan membaca inbox otomatis.</span>
+          </div>
+
+          <button class="primary-button tool-submit" id="inbox-submit" type="submit">
+            <span id="inbox-button-text">Ambil link terbaru</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 5v4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </form>
+
+        <div id="inbox-notice" class="notice hidden" role="status" aria-live="polite"></div>
+        <div id="inbox-results" class="tool-results hidden"></div>
+      </div>
+
+      <div class="security-note tools-security">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3 5.5 5.6v5.1c0 4.3 2.7 8.1 6.5 9.3 3.8-1.2 6.5-5 6.5-9.3V5.6L12 3Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="m9.3 11.7 1.8 1.8 3.7-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Token bulk tetap diproses di server. Pembaca email hanya menampilkan link Alight Motion dari pesan terbaru.</span>
+      </div>
+    </section>
+
+    <section class="activation-card" id="activation-card">
+      <div class="card-topline">
+        <div class="step-copy">
+          <span id="step-kicker">Langkah 1 dari 2</span>
+          <h2 id="step-title">Kirim email verifikasi</h2>
+          <p id="step-description">Masukkan email yang digunakan untuk akun Alight Motion.</p>
         </div>
 
-        <!-- Daftar Tools -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
-            
-            <!-- Tool 1: AM Send -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-blue-500 shadow-sm shadow-blue-200"></span> AM Send
-                    </h2>
-                    <p class="text-slate-500 text-sm mb-6 leading-relaxed">Gunakan fitur pengiriman pesan otomatis. 1x Submit memotong 1 Kuota Send.</p>
-                </div>
-                <button onclick="gunakanTool('send')" id="btnSend" class="w-full text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="textBtnSend">Gunakan AM Send</span>
-                </button>
-            </div>
-
-            <!-- Tool 2: AM Verif -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span> AM Verif
-                    </h2>
-                    <p class="text-slate-500 text-sm mb-6 leading-relaxed">Gunakan fitur verifikasi akun otomatis. 1x Submit memotong 1 Kuota Verif.</p>
-                </div>
-                <button onclick="gunakanTool('verif')" id="btnVerif" class="w-full text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="textBtnVerif">Gunakan AM Verif</span>
-                </button>
-            </div>
-
+        <div class="step-visual" aria-hidden="true">
+          <span class="step-dot active" id="dot-one">1</span>
+          <span class="step-line"></span>
+          <span class="step-dot" id="dot-two">2</span>
         </div>
-    </div>
+      </div>
 
-    <!-- Modal QRIS -->
-    <div id="qrisModal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 px-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
-            <div class="bg-indigo-600 px-6 py-4 flex justify-between items-center">
-                <h3 class="text-white font-bold text-lg">Beli Paket Fitur</h3>
-                <button onclick="tutupModalQRIS()" class="text-indigo-100 hover:text-white text-2xl leading-none transition-colors">&times;</button>
-            </div>
-            <div class="p-6 text-center">
-                <div id="qrisLoading" class="flex flex-col items-center justify-center py-8">
-                    <div class="loader mb-4"></div>
-                    <p class="text-slate-500 font-medium">Membuat QRIS...</p>
-                </div>
-                
-                <div id="qrisContent" class="hidden">
-                    <p class="text-slate-600 mb-2 text-sm">Silakan scan kode QRIS menggunakan e-Wallet / M-Banking.</p>
-                    <h2 id="qrisNominal" class="text-3xl font-black text-slate-800 mb-4 tracking-tight">Rp 0</h2>
-                    <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-200 inline-block mb-4">
-                        <img id="qrisImage" src="" alt="QRIS Code" class="w-48 h-48 object-contain">
-                    </div>
-                    <div class="flex items-center justify-center gap-3 text-indigo-600 text-sm font-semibold mb-2 bg-indigo-50/80 border border-indigo-100 py-2.5 px-4 rounded-full w-max mx-auto">
-                        <div class="loader" style="width: 14px; height: 14px; border-width: 2px; border-top-color: #4f46e5;"></div>
-                        Menunggu pembayaran...
-                    </div>
-                    <p class="text-xs text-slate-400 mt-4">Otomatis terverifikasi. Halaman akan tertutup jika berhasil.</p>
-                </div>
-            </div>
+      <div class="api-status">
+        <span class="api-status-icon">
+          <i></i>
+        </span>
+        <div>
+          <strong id="status-title">Layanan siap digunakan</strong>
+          <span id="status-text">API terhubung dan menunggu permintaan.</span>
         </div>
-    </div>
+      </div>
 
-    <!-- Modal Hasil -->
-    <div id="resultModal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 px-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all">
-            <div class="bg-slate-800 px-6 py-4 flex justify-between items-center">
-                <h3 class="text-white font-bold text-lg flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span id="modalTitle">Mengeksekusi Tool...</span>
-                </h3>
-                <button onclick="document.getElementById('resultModal').classList.replace('flex', 'hidden')" class="text-slate-400 hover:text-white text-2xl leading-none transition-colors">&times;</button>
-            </div>
-            <div class="p-6">
-                <p class="mb-3 text-slate-600 font-medium text-sm">Hasil Response API:</p>
-                <div class="bg-slate-900 rounded-xl p-4 max-h-[60vh] overflow-y-auto shadow-inner custom-scrollbar">
-                    <pre id="toolResult" class="text-emerald-400 text-sm font-mono whitespace-pre-wrap break-words leading-relaxed"></pre>
-                </div>
-                <div class="mt-6 text-right">
-                    <button onclick="document.getElementById('resultModal').classList.replace('flex', 'hidden')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-6 rounded-lg transition-colors border border-slate-200">
-                        Tutup Panel
-                    </button>
-                </div>
-            </div>
+      <form id="main-form" novalidate>
+        <div class="field-group">
+          <label id="field-label-text" for="main-input">Email target</label>
+          <div class="field-shell">
+            <span class="field-icon" id="field-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 6.8h16v10.4H4z" stroke="currentColor" stroke-width="1.8"/>
+                <path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <input
+              id="main-input"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              maxlength="254"
+              placeholder="nama@email.com"
+              required
+            >
+          </div>
         </div>
-    </div>
 
-    <script>
-        // ==========================================
-        // KONFIGURASI API 
-        // ==========================================
-        const CONFIG = {
-            RAMASHOP_API_KEY: "rg_1af70760859a1902cbab809df49e6dG_BARU",
-            JEREXD_API_KEY: "vannzstore",
-            HARGA_PER_PAKET: 1000
-        };
-        
-        let intervalCekStatus = null;
-        let depositIdSaatIni = null;
+        <button id="submit-button" class="primary-button" type="submit">
+          <span id="button-text">Kirim link verifikasi</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
 
-        // PERINGATAN: Menyimpan data kuota di localStorage sisi klien TIDAK AMAN untuk produksi.
-        // Sebaiknya gunakan database dan validasi backend untuk menghindari manipulasi kuota.
-        let kuotaSend = parseInt(localStorage.getItem('jerexd_kuota_send')) || 0;
-        let kuotaVerif = parseInt(localStorage.getItem('jerexd_kuota_verif')) || 0;
+      <div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
 
-        // Inisialisasi UI Pertama Kali
-        document.addEventListener('DOMContentLoaded', updateUI);
+      <div class="security-note">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3 5.5 5.6v5.1c0 4.3 2.7 8.1 6.5 9.3 3.8-1.2 6.5-5 6.5-9.3V5.6L12 3Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="m9.3 11.7 1.8 1.8 3.7-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Token API diproses di server dan tidak ditampilkan di browser.</span>
+      </div>
+    </section>
 
-        // Update tampilan angka kuota & status tombol
-        function updateUI() {
-            document.getElementById('teksKuotaSend').innerText = kuotaSend;
-            document.getElementById('teksKuotaVerif').innerText = kuotaVerif;
-            
-            // Logic Tombol Send
-            const btnSend = document.getElementById('btnSend');
-            const textBtnSend = document.getElementById('textBtnSend');
-            if(kuotaSend > 0) {
-                btnSend.disabled = false;
-                btnSend.className = "w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm flex justify-center items-center gap-2";
-                textBtnSend.innerText = `Gunakan AM Send (Sisa: ${kuotaSend})`;
-            } else {
-                btnSend.disabled = true;
-                btnSend.className = "w-full bg-slate-300 text-slate-500 font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm flex justify-center items-center gap-2 cursor-not-allowed";
-                textBtnSend.innerText = `Kuota Send Habis`;
-            }
+    <section class="guide-card" id="guide-card">
+      <div class="guide-header">
+        <div class="guide-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 3.8h8a2 2 0 0 1 2 2v12.4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5.8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M9.2 8.2h5.6M9.2 12h5.6M9.2 15.8h3.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <span>PANDUAN</span>
+          <h2>Setelah email dikirim</h2>
+        </div>
+      </div>
 
-            // Logic Tombol Verif
-            const btnVerif = document.getElementById('btnVerif');
-            const textBtnVerif = document.getElementById('textBtnVerif');
-            if(kuotaVerif > 0) {
-                btnVerif.disabled = false;
-                btnVerif.className = "w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm flex justify-center items-center gap-2";
-                textBtnVerif.innerText = `Gunakan AM Verif (Sisa: ${kuotaVerif})`;
-            } else {
-                btnVerif.disabled = true;
-                btnVerif.className = "w-full bg-slate-300 text-slate-500 font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm flex justify-center items-center gap-2 cursor-not-allowed";
-                textBtnVerif.innerText = `Kuota Verif Habis`;
-            }
-        }
+      <p id="guide-email" class="guide-email">
+        Setelah link dikirim, ikuti langkah berikut untuk menyelesaikan verifikasi.
+      </p>
 
-        // Simpan kuota baru ke localStorage
-        function simpanKuota(send, verif) {
-            kuotaSend = Math.max(0, send);
-            kuotaVerif = Math.max(0, verif);
-            localStorage.setItem('jerexd_kuota_send', kuotaSend);
-            localStorage.setItem('jerexd_kuota_verif', kuotaVerif);
-            updateUI();
-        }
+      <ol class="guide-list">
+        <li>
+          <span>1</span>
+          <div>
+            <strong>Cek folder Spam</strong>
+            <p>Pastikan email verifikasi tidak masuk ke folder spam.</p>
+          </div>
+        </li>
+        <li>
+          <span>2</span>
+          <div>
+            <strong>Tandai sebagai bukan spam</strong>
+            <p>Buka email dari noreply, lalu tekan “Laporkan bukan spam”.</p>
+          </div>
+        </li>
+        <li>
+          <span>3</span>
+          <div>
+            <strong>Buka kembali dari menu Utama</strong>
+            <p>Masuk ke inbox utama lalu buka kembali email verifikasinya.</p>
+          </div>
+        </li>
+        <li>
+          <span>4</span>
+          <div>
+            <strong>Salin full link</strong>
+            <p>Tekan lama “Login ke Alight Creative”, lalu salin link lengkap yang diawali <code>https://alight-creative...</code></p>
+          </div>
+        </li>
+        <li>
+          <span>5</span>
+          <div>
+            <strong>Tempel link ke kolom verifikasi</strong>
+            <p>Kembali ke halaman ini dan tempel seluruh link pada kolom yang muncul.</p>
+          </div>
+        </li>
+      </ol>
 
-        // ==========================================
-        // ALUR 1: BELI PAKET
-        // ==========================================
-        async function beliPaket() {
-            const modal = document.getElementById('qrisModal');
-            const loading = document.getElementById('qrisLoading');
-            const content = document.getElementById('qrisContent');
-            
-            modal.classList.replace('hidden', 'flex');
-            loading.classList.remove('hidden');
-            content.classList.add('hidden');
+      <div class="guide-tip">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9.2 18h5.6M10 21h4M8.4 14.8c-1.3-1-2.1-2.5-2.1-4.2a5.7 5.7 0 0 1 11.4 0c0 1.7-.8 3.2-2.1 4.2-.7.6-1 1-1 1.7H9.4c0-.7-.3-1.1-1-1.7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Link verifikasi biasanya hanya aktif beberapa menit. Selesaikan proses segera setelah email diterima.</span>
+      </div>
+    </section>
 
-            try {
-                const respon = await fetch('https://ramashop.my.id/api/public/deposit/create', {
-                    method: 'POST',
-                    headers: {
-                        'X-API-Key': CONFIG.RAMASHOP_API_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ amount: CONFIG.HARGA_PER_PAKET, method: 'qris' })
-                });
+    <footer class="footer">
+      <span>© 2026 ZNN</span>
+      <span class="footer-dot">•</span>
+      <span>api.znn.my.id</span>
+    </footer>
+  </main>
 
-                const data = await respon.json();
 
-                if (respon.ok && data.success) {
-                    document.getElementById('qrisNominal').innerText = `Rp ${data.data.totalAmount.toLocaleString('id-ID')}`;
-                    document.getElementById('qrisImage').src = data.data.qrImage;
-                    depositIdSaatIni = data.data.depositId;
-                    
-                    loading.classList.add('hidden');
-                    content.classList.remove('hidden');
+  <div class="modal-layer hidden" id="channel-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-channel-close></div>
+    <section class="modal-card channel-card" role="dialog" aria-modal="true" aria-labelledby="channel-title">
+      <button class="modal-close" type="button" aria-label="Tutup" data-channel-close>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-                    mulaiCekPembayaran(depositIdSaatIni);
-                } else {
-                    alert('Gagal membuat QRIS: ' + (data.message || 'Error server'));
-                    tutupModalQRIS();
-                }
-            } catch (error) {
-                alert('Terjadi kesalahan koneksi saat membuat QRIS.');
-                tutupModalQRIS();
-            }
-        }
+      <div class="channel-badge">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20.4 11.8a8.3 8.3 0 0 1-12.2 7.3L4 20.2l1.2-4.1A8.3 8.3 0 1 1 20.4 11.8Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8.5 8.4c.2-.4.4-.5.7-.5h.5c.2 0 .3.1.4.3l.8 1.8c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4 0 .7.5.9 1.3 1.7 2.2 2.2.3.2.5.2.7 0l.7-.9c.2-.3.4-.3.7-.2l1.8.8c.3.1.4.2.4.4 0 .3-.2 1.2-.9 1.8-.6.5-1.4.7-2.2.5-1-.2-2.8-.8-4.6-2.4-1.5-1.4-2.5-3-2.8-3.8-.3-.8 0-1.5.3-2Z" fill="currentColor"/>
+        </svg>
+      </div>
 
-        function mulaiCekPembayaran(depositId) {
-            if (intervalCekStatus) clearInterval(intervalCekStatus);
+      <span class="modal-kicker">WHATSAPP CHANNEL</span>
+      <h2 id="channel-title">Ikuti saluran ZNN</h2>
+      <p id="channel-description">Dapatkan info update layanan, fitur baru, dan pengumuman penting langsung dari saluran WhatsApp.</p>
 
-            intervalCekStatus = setInterval(async () => {
-                try {
-                    const respon = await fetch(`https://ramashop.my.id/api/public/deposit/status/${depositId}`, {
-                        headers: { 'X-API-Key': CONFIG.RAMASHOP_API_KEY }
-                    });
-                    const data = await respon.json();
+      <a
+        class="modal-primary channel-follow"
+        id="channel-follow"
+        href="https://whatsapp.com/channel/0029Vb6jzN97z4keastNq73f"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>Ikuti saluran</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
 
-                    if (respon.ok && data.status) {
-                        if (data.data.status === 'success' || data.data.status === 'already') {
-                            clearInterval(intervalCekStatus);
-                            tutupModalQRIS();
-                            
-                            // Tambah kuota
-                            simpanKuota(kuotaSend + 1, kuotaVerif + 1);
-                            
-                            // Gunakan setTimeout agar alert tidak memblokir penutupan modal
-                            setTimeout(() => {
-                                alert("✅ Pembayaran Berhasil!\n\nAnda mendapatkan 1 Paket Lengkap. Kini Anda bisa menggunakan fitur AM Send 1x DAN AM Verif 1x.");
-                            }, 300);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Pengecekan status error', error);
-                }
-            }, 5000);
-        }
+      <button class="modal-secondary" type="button" data-channel-close>Nanti saja</button>
+    </section>
+  </div>
 
-        function tutupModalQRIS() {
-            document.getElementById('qrisModal').classList.replace('flex', 'hidden');
-            if (intervalCekStatus) clearInterval(intervalCekStatus);
-        }
+  <div class="modal-layer hidden" id="bot-only-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-bot-only-close></div>
+    <section class="modal-card bot-only-card" role="dialog" aria-modal="true" aria-labelledby="bot-only-title">
+      <button class="modal-close" type="button" aria-label="Tutup" data-bot-only-close>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-        // ==========================================
-        // ALUR 2: GUNAKAN TOOL
-        // ==========================================
-        async function gunakanTool(tipeTool) {
-            // Validasi Kuota
-            if (tipeTool === 'send') {
-                if (kuotaSend <= 0) return alert("❌ Kuota fitur 'Send' Anda sudah habis.");
-                simpanKuota(kuotaSend - 1, kuotaVerif);
-            } else if (tipeTool === 'verif') {
-                if (kuotaVerif <= 0) return alert("❌ Kuota fitur 'Verif' Anda sudah habis.");
-                simpanKuota(kuotaSend, kuotaVerif - 1);
-            }
+      <div class="bot-only-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5.2 18.2 4 21l3.1-1a8.4 8.4 0 1 0-1.9-1.8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M8.2 9.1c.6 2.4 2.4 4.2 4.8 4.8l1.2-1.2c.2-.2.5-.3.8-.2l2 .8c.3.1.5.4.5.8v1.5c0 .5-.4.9-.9.9A9.4 9.4 0 0 1 7.5 7.4c0-.5.4-.9.9-.9h1.5c.4 0 .7.2.8.5l.8 2c.1.3 0 .6-.2.8l-1.2 1.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
 
-            // Persiapan UI Modal Hasil
-            const urlTarget = tipeTool === 'send' 
-                ? `https://api.jerexd.my.id/api/am/send?apikey=${CONFIG.JEREXD_API_KEY}`
-                : `https://api.jerexd.my.id/api/am/verif?apikey=${CONFIG.JEREXD_API_KEY}`;
-            
-            const resultModal = document.getElementById('resultModal');
-            const toolResult = document.getElementById('toolResult');
-            
-            document.getElementById('modalTitle').innerText = `Response: AM ${tipeTool.toUpperCase()}`;
-            toolResult.innerText = "Mengirim request ke API... ⏳\nHarap tunggu sebentar.";
-            toolResult.className = "text-yellow-400 text-sm font-mono whitespace-pre-wrap break-words leading-relaxed animate-pulse";
-            
-            resultModal.classList.replace('hidden', 'flex');
+      <span class="modal-kicker bot-only-kicker">BOT WHATSAPP</span>
+      <h2 id="bot-only-title">Fitur ini hanya tersedia di bot WhatsApp</h2>
+      <p>Bulk dan Baca Email sekarang hanya bisa digunakan melalui bot WhatsApp. Buat botmu di sini.</p>
 
-            // Eksekusi API
-            try {
-                const respon = await fetch(urlTarget);
-                const contentType = respon.headers.get("content-type");
-                let hasilAkhir = "";
-                
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    const data = await respon.json();
-                    hasilAkhir = JSON.stringify(data, null, 2);
-                } else {
-                    hasilAkhir = await respon.text();
-                }
+      <a
+        class="modal-primary bot-only-action"
+        href="https://h4yperbot.site"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>Buat botmu di sini</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
 
-                toolResult.innerText = hasilAkhir;
-                toolResult.className = "text-emerald-400 text-sm font-mono whitespace-pre-wrap break-words leading-relaxed";
-            } catch (error) {
-                toolResult.innerText = `❌ Error mengambil data Jerexd API:\n${error.message}\n\nCatatan: Kuota Anda tetap terpotong karena request sudah dicoba dikirim.`;
-                toolResult.className = "text-red-400 text-sm font-mono whitespace-pre-wrap break-words leading-relaxed";
-            }
-        }
-    </script>
+      <button class="modal-secondary" type="button" data-bot-only-close>Tutup</button>
+    </section>
+  </div>
+
+  <div class="modal-layer hidden" id="success-modal" aria-hidden="true">
+    <div class="modal-backdrop success-backdrop"></div>
+    <section class="modal-card success-card" role="dialog" aria-modal="true" aria-labelledby="success-title">
+      <div class="success-effects" aria-hidden="true">
+        <i class="spark spark-1"></i>
+        <i class="spark spark-2"></i>
+        <i class="spark spark-3"></i>
+        <i class="spark spark-4"></i>
+        <i class="spark spark-5"></i>
+        <i class="spark spark-6"></i>
+        <i class="spark spark-7"></i>
+        <i class="spark spark-8"></i>
+      </div>
+
+      <div class="success-check">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m7.2 12.4 3.1 3.1 6.7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <span class="modal-kicker success-kicker">AKTIVASI SELESAI</span>
+      <h2 id="success-title">Premium berhasil diproses</h2>
+      <p id="success-message">Verifikasi berhasil. Akun Alight Motion kamu sudah diproses oleh sistem.</p>
+
+      <button class="modal-primary success-done" id="success-done" type="button">
+        <span>Selesai</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </section>
+  </div>
+
+  <script src="/app.js" defer></script>
 </body>
 </html>
